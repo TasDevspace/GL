@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حاسبة المعدل — Génie Logiciel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f4fb;--card:#fff;--tx:#1b1d3a;--mut:#6b6f92;--bd:#e3e5f3;--pr:#6c5ce7;--pr2:#00b4d8;--ok:#12b886;--wn:#f59f00;--er:#f03e3e;--inp:#f7f8fe;--sh:0 4px 18px rgba(60,60,130,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12132a;--card:#1c1e3c;--tx:#eef0ff;--mut:#9a9dc4;--bd:#2d3060;--inp:#15172f;--sh:none}}
+:root[data-theme="dark"]{--bg:#12132a;--card:#1c1e3c;--tx:#eef0ff;--mut:#9a9dc4;--bd:#2d3060;--inp:#15172f;--sh:none}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Cairo,system-ui,sans-serif;min-height:100%}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px 40px}
+header{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;padding:22px 18px 70px;border-radius:0 0 28px 28px;margin:0 -14px;text-align:center}
+header h1{margin:0;font-size:1.5rem;font-weight:800}
+header p{margin:4px 0 0;opacity:.85;font-size:.85rem}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:-52px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.sc{background:var(--card);border-radius:18px;padding:12px 8px;text-align:center;box-shadow:var(--sh);border:1px solid var(--bd)}
+.sc.y{background:linear-gradient(135deg,#232552,#3b3f8f);color:#fff;border:0}
+.sc small{display:block;color:var(--mut);font-size:.75rem;font-weight:600}
+.sc.y small{color:#c9ccff}
+.sc b{display:block;font-size:1.7rem;font-weight:800;line-height:1.3;direction:ltr}
+.sc em{font-style:normal;font-size:.78rem;color:var(--mut)}
+.sc.y em{color:#c9ccff}
+.bar{height:5px;background:var(--bd);border-radius:9px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pr),var(--pr2));transition:width .4s}
+.good{color:var(--ok)}.mid{color:var(--wn)}.bad{color:var(--er)}
+.sc.y .good{color:#69f0c0}.sc.y .mid{color:#ffd66b}.sc.y .bad{color:#ff9a9a}
+h2{font-size:1.15rem;margin:26px 4px 10px;display:flex;align-items:center;gap:8px}
+h2:before{content:"";width:6px;height:22px;border-radius:4px;background:linear-gradient(var(--pr),var(--pr2))}
+.unit{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:10px;margin-bottom:12px;box-shadow:var(--sh)}
+.ut{display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--mut);padding:2px 8px 8px;font-weight:600}
+.pill{background:var(--inp);border:1px solid var(--bd);border-radius:20px;padding:2px 10px;direction:ltr}
+.pill.ok{background:rgba(18,184,134,.15);color:var(--ok);border-color:transparent}
+.mods{display:grid;gap:10px}
+@media(min-width:640px){.mods.two{grid-template-columns:1fr 1fr}}
+.mod{background:var(--inp);border:1px solid var(--bd);border-radius:14px;padding:12px}
+.mh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.mn{font-weight:700;font-size:.92rem;direction:ltr;text-align:left;line-height:1.35}
+.tags{display:flex;gap:5px;margin:8px 0;flex-wrap:wrap}
+.tag{font-size:.7rem;padding:1px 9px;border-radius:20px;background:var(--card);border:1px solid var(--bd);color:var(--mut)}
+.row{display:flex;gap:8px;align-items:flex-end}
+.f{flex:1;min-width:0}
+.f label{display:block;font-size:.7rem;color:var(--mut);margin-bottom:2px;font-weight:600}
+input{width:100%;font:inherit;font-weight:700;text-align:center;border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:7px 2px;direction:ltr;outline:0;transition:.15s}
+input:focus{border-color:var(--pr);box-shadow:0 0 0 3px rgba(108,92,231,.18)}
+.res{min-width:62px;text-align:center}
+.res b{display:block;font-size:1.25rem;font-weight:800;direction:ltr}
+.cr{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block}
+.cr.y{background:rgba(18,184,134,.15);color:var(--ok)}.cr.n{background:rgba(240,62,62,.13);color:var(--er)}.cr.z{background:var(--card);color:var(--mut)}
+.foot{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:9px 18px;cursor:pointer;background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+button.d{color:var(--er)}
+.note{color:var(--mut);font-size:.75rem;text-align:center;margin-top:14px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>🎓 حاسبة المعدل</h1><p>Master Génie Logiciel — أدخل نقاطك وسيُحسب كل شيء مباشرة</p></header>
+<div class="sum">
+ <div class="sc"><small>السداسي 1</small><b id="a1">—</b><em id="c1"></em><div class="bar"><i id="b1"></i></div></div>
+ <div class="sc"><small>السداسي 2</small><b id="a2">—</b><em id="c2"></em><div class="bar"><i id="b2"></i></div></div>
+ <div class="sc y"><small>المعدل السنوي</small><b id="ay">—</b><em id="cy"></em><div class="bar"><i id="by"></i></div></div>
+</div>
+<div id="app"></div>
+<div class="foot"><button id="th">🌓 الوضع</button><button class="d" id="rs">🗑️ مسح كل النقاط</button></div>
+<p class="note">✔ يُحفظ كل شيء تلقائيًا في متصفحك.<br>المادة التي لم تُدخل لها أي نقطة لا تدخل في حساب المعدل. الخانة الفارغة داخل مادة بدأت تعبئتها تُحسب 0.<br>المواد ذات TP فقط تُحسب: Examen×0.6 + TP×0.4.</p>
+</div>
+<script>
+// t: e=examen فقط, et=+TD, etp=+TD+TP, ep=+TP
+const M=(id,n,c,k,t)=>({id,n,c,k,t});
+const SEM=[
+ [[M('a1','Algorithmique Avancée et Complexité',3,5,'etp'),M('a2','Bases de Données Avancées',3,5,'etp')],
+  [M('a3','Ingénierie des Exigences',3,4,'et'),M('a4','Méthodes de Conception de Logiciels et Design Patterns',3,4,'etp')],
+  [M('a5','Compilation Avancée',2,4,'ep'),M('a6','Paradigmes de Programmation',2,5,'ep')],
+  [M('a7','Réseaux Avancés',1,2,'ep')],
+  [M('a8','Une Matière au Choix',1,1,'e')]],
+ [[M('b1','Architectures Logicielles',3,5,'etp'),M('b2','Architectures Orientées Services',3,5,'etp')],
+  [M('b3',"Systèmes d'Information Coopératifs",3,4,'et'),M('b4','Sémantiques Formelles des Langages de Programmation',3,4,'et')],
+  [M('b5','Systèmes Multi Agents',2,4,'ep'),M('b6','Apprentissage Automatique',2,5,'etp')],
+  [M('b7','Lean Startup',1,2,'ep')],
+  [M('b8','Une Matière au Choix',1,1,'e')]]
+];
+const KEY='moyenne-gl-v1';
+let V={};try{V=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){V={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(V))}catch(e){}};
+const $=id=>document.getElementById(id);
+const W={e:{e:1},et:{e:.6,d:.4},etp:{e:.6,d:.2,p:.2},ep:{e:.6,p:.4}};
+const LBL={e:'Examen',d:'TD',p:'TP'};
+const fmt=x=>x==null?'—':x.toFixed(2);
+const cls=x=>x==null?'':x>=12?'good':x>=10?'mid':'bad';
+function avg(m){
+ const w=W[m.t],v=V[m.id]||{};let any=false,s=0;
+ for(const k in w){const r=v[k];if(r!==undefined&&r!==''){any=true;s+=Math.min(20,Math.max(0,+r||0))*w[k]}}
+ return any?s:null;
+}
+function semCalc(units){
+ let sw=0,sa=0,cr=0,tot=0;const res={};
+ units.forEach(u=>{
+  const a=u.map(avg);u.forEach(m=>tot+=m.k);
+  const pair=u.length==2&&a[0]!=null&&a[1]!=null?(a[0]+a[1])/2:null;
+  u.forEach((m,i)=>{if(a[i]!=null){sw+=m.c;sa+=a[i]*m.c}});
+  res[u[0].id]={a,pair};
+ });
+ const sm=sw?sa/sw:null;
+ units.forEach(u=>{const r=res[u[0].id];u.forEach((m,i)=>{
+  const ok=r.a[i]!=null&&(r.a[i]>=10||(r.pair!=null&&r.pair>=10));
+  r['c'+i]=sm!=null&&sm>=10?(r.a[i]!=null?'auto':'z'):r.a[i]==null?'z':ok?'y':'n';
+  if(sm!=null&&sm>=10)cr+=m.k; else if(ok)cr+=m.k;
+ })});
+ if(sm!=null&&sm>=10)cr=tot;
+ return{sm,cr,tot,res};
+}
+function build(){
+ $('app').innerHTML=SEM.map((units,si)=>`<h2>السداسي ${si+1}</h2>`+units.map(u=>`
+ <div class="unit">${u.length==2?`<div class="ut"><span>ثنائية: (م1 + م2) ÷ 2</span><span class="pill" id="p${u[0].id}">—</span></div>`:''}
+ <div class="mods ${u.length==2?'two':''}">${u.map(m=>`
+  <div class="mod"><div class="mh"><div class="mn">${m.n}</div><div class="res"><b id="r${m.id}">—</b><span class="cr z" id="k${m.id}"></span></div></div>
+  <div class="tags"><span class="tag">Coef ${m.c}</span><span class="tag">${m.k} Crédits</span></div>
+  <div class="row">${Object.keys(W[m.t]).map(k=>`<div class="f"><label>${LBL[k]} <span style="opacity:.6">${W[m.t][k]*100}%</span></label>
+   <input type="text" inputmode="decimal" autocomplete="off" placeholder="0–20" data-i="${m.id}" data-k="${k}" value="${(V[m.id]||{})[k]??''}"></div>`).join('')}</div></div>`).join('')}
+ </div></div>`).join('')).join('');
+}
+function upd(){
+ const out=SEM.map((units,si)=>{
+  const s=semCalc(units);
+  units.forEach(u=>{const r=s.res[u[0].id];
+   if(u.length==2){const p=$('p'+u[0].id);p.textContent=r.pair==null?'—':fmt(r.pair);p.className='pill'+(r.pair!=null&&r.pair>=10?' ok':'')}
+   u.forEach((m,i)=>{const e=$('r'+m.id);e.textContent=fmt(r.a[i]);e.className=cls(r.a[i]);
+    const k=$('k'+m.id),c=r['c'+i];
+    k.className='cr '+(c=='z'?'z':c=='n'?'n':'y');
+    k.textContent=c=='z'?'':c=='n'?'0 / '+m.k:m.k+' / '+m.k+(c=='auto'?' ✓':' ✓');});
+  });
+  $('a'+(si+1)).textContent=fmt(s.sm);$('a'+(si+1)).className=cls(s.sm);
+  $('c'+(si+1)).textContent=s.cr+' / '+s.tot+' crédits';
+  $('b'+(si+1)).style.width=(s.cr/s.tot*100)+'%';
+  return s;
+ });
+ const av=out.map(o=>o.sm).filter(x=>x!=null);
+ const ya=av.length?av.reduce((a,b)=>a+b)/av.length:null;
+ const yc=ya!=null&&ya>=10?60:out[0].cr+out[1].cr;
+ $('ay').textContent=fmt(ya);$('ay').className=cls(ya);
+ $('cy').textContent=yc+' / 60 crédits';$('by').style.width=(yc/60*100)+'%';
+}
+document.addEventListener('input',e=>{
+ const t=e.target;if(!t.dataset.i)return;
+ let v=t.value.replace(',','.').replace(/[^0-9.]/g,'');
+ if(v!==''&&+v>20)v='20';
+ t.value=v;(V[t.dataset.i]=V[t.dataset.i]||{})[t.dataset.k]=v;save();upd();
+});
+$('rs').onclick=()=>{if(confirm('هل تريد مسح كل النقاط؟')){V={};save();build();upd()}};
+$('th').onclick=()=>{const r=document.documentElement;const d=getComputedStyle(r).getPropertyValue('--bg').trim()=='#12132a';r.dataset.theme=d?'light':'dark'};
+build();upd();
+</script>
+</body>
+</html>
